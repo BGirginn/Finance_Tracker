@@ -40,7 +40,7 @@ class ExpenseCategory {
   }
 
   IconData get icon => iconDataFromName(iconName);
-  Color get color => Color(int.parse(colorHex, radix: 16));
+  Color get color => Color(0xFF000000 | int.parse(colorHex, radix: 16));
 
   static IconData iconDataFromName(String name) {
     return categoryIcons[name] ?? Icons.category;
@@ -166,6 +166,40 @@ List<ExpenseCategory> getDefaultExpenseCategories() {
       colorHex: '607D8B',
       isDefault: true,
       sortOrder: 99,
+    ),
+  ];
+}
+
+/// Varsayılan gelir kategorileri (gelire uygun, canlı renklerle)
+List<ExpenseCategory> getDefaultIncomeCategories() {
+  return [
+    ExpenseCategory(
+      name: 'Maaş',
+      iconName: 'attach_money',
+      colorHex: '4CAF50', // Green
+      isDefault: true,
+      sortOrder: 1,
+    ),
+    ExpenseCategory(
+      name: 'Yatırım',
+      iconName: 'savings',
+      colorHex: '009688', // Teal
+      isDefault: true,
+      sortOrder: 2,
+    ),
+    ExpenseCategory(
+      name: 'Hediye',
+      iconName: 'card_giftcard',
+      colorHex: 'FF9800', // Orange
+      isDefault: true,
+      sortOrder: 3,
+    ),
+    ExpenseCategory(
+      name: 'Faiz',
+      iconName: 'account_balance',
+      colorHex: '3F51B5', // Indigo
+      isDefault: true,
+      sortOrder: 4,
     ),
   ];
 }
