@@ -22,7 +22,7 @@ class _CategoriesSettingsScreenState extends ConsumerState<CategoriesSettingsScr
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -59,9 +59,46 @@ class _CategoriesSettingsScreenState extends ConsumerState<CategoriesSettingsScr
           ),
           // Income tab
           _buildIncomeList(incomeList),
+          // Investment tab
+          _buildInvestmentList(ref.watch(investmentTypeNotifierProvider)),
         ],
       ),
     );
+  }
+
+  Widget _buildInvestmentList(List<InvestmenTtypePlaceholder> list) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        final t = list[index];
+        return Padding(
+          key: ValueKey(t.id),
+          padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+          child: ModernCard(
+            child: ListTile(
+              leading: CircleAvatar(backgroundColor: Color(0xFF000000 | int.parse(t.colorHex, radix: 16)).withOpacity(0.15), child: Icon(InvestmentType.iconDataFromName(t.iconName), color: Color(0xFF000000 | int.parse(t.colorHex, radix: 16)))),
+              title: Text(t.name),
+              subtitle: Text(t.code),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(icon: const Icon(Icons.edit_outlined), onPressed: () => _editInvestmentType(t)),
+                IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => _deleteInvestmentType(t)),
+              ]),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _editInvestmentType(InvestmenTtypePlaceholder t) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AddEditInvestmentTypeScreen(type: t, onSave: (edited) async {
+      await ref.read(investmentTypeNotifierProvider.notifier).updateType(edited);
+    })));
+  }
+
+  void _deleteInvestmentType(InvestmenTtypePlaceholder t) {
+    showDialog(context: context, builder: (ctx) => AlertDialog(title: const Text('Sil'), content: Text('${t.name} silinsin mi?'), actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')), ElevatedButton(onPressed: () async { Navigator.pop(ctx); await ref.read(investmentTypeNotifierProvider.notifier).deleteType(t.id); }, child: const Text('Sil'))]));
   }
 
   Widget _buildExpenseList(List<ExpenseCategory> categories) {

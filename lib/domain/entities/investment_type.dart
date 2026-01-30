@@ -40,7 +40,7 @@ class InvestmentType {
   }
 
   IconData get icon => iconDataFromName(iconName);
-  Color get color => Color(int.parse(colorHex, radix: 16));
+  Color get color => Color(0xFF000000 | int.parse(colorHex, radix: 16));
 
   static IconData iconDataFromName(String name) {
     return investmentIcons[name] ?? Icons.trending_up;

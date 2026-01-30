@@ -105,3 +105,52 @@ class IncomeCategoryNotifier extends StateNotifier<List<ExpenseCategory>> {
 final incomeCategoryNotifierProvider = StateNotifierProvider<IncomeCategoryNotifier, List<ExpenseCategory>>((ref) {
   return IncomeCategoryNotifier();
 });
+
+/// Investment types notifier (in-memory editable)
+class InvestmentTypeNotifier extends StateNotifier<List<InvestmenTtypePlaceholder>> {
+  InvestmentTypeNotifier() : super([]) {
+    // initialize from defaults
+    state = getDefaultInvestmentTypes()
+        .asMap()
+        .entries
+        .map((e) => InvestmenTtypePlaceholder.fromInvestmentType(e.value, DateTime.now().millisecondsSinceEpoch + e.key))
+        .toList();
+  }
+
+  Future<void> addType(InvestmenTtypePlaceholder t) async {
+    state = [...state, t];
+  }
+
+  Future<void> updateType(InvestmenTtypePlaceholder t) async {
+    state = state.map((s) => s.id == t.id ? t : s).toList();
+  }
+
+  Future<void> deleteType(int id) async {
+    state = state.where((s) => s.id != id).toList();
+  }
+}
+
+final investmentTypeNotifierProvider = StateNotifierProvider<InvestmentTypeNotifier, List<InvestmenTtypePlaceholder>>((ref) {
+  return InvestmentTypeNotifier();
+});
+
+// Lightweight wrapper to avoid adding DB dependency here but reuse InvestmentType defaults
+class InvestmenTtypePlaceholder {
+  final int id;
+  final String name;
+  final String code;
+  final String iconName;
+  final String colorHex;
+
+  InvestmenTtypePlaceholder({required this.id, required this.name, required this.code, required this.iconName, required this.colorHex});
+
+  factory InvestmenTtypePlaceholder.fromInvestmentType(InvestmentType t, int id) => InvestmenTtypePlaceholder(
+        id: id,
+        name: t.name,
+        code: t.code,
+        iconName: t.iconName,
+        colorHex: t.colorHex,
+      );
+
+  InvestmentType toInvestmentType() => InvestmentType(id: id, name: name, code: code, iconName: iconName, colorHex: colorHex);
+}
