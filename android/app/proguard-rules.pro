@@ -1,0 +1,19 @@
+# Flutter wrapper
+-keep class io.flutter.app.** { *; }
+-keep class io.flutter.plugin.**  { *; }
+-keep class io.flutter.util.**  { *; }
+-keep class io.flutter.view.**  { *; }
+-keep class io.flutter.**  { *; }
+-keep class io.flutter.plugins.**  { *; }
+
+# Keep native methods
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# Keep SQLite
+-keep class com.tekartik.sqflite.** { *; }
+-keep class org.sqlite.** { *; }
+
+# Keep Drift
+-keep class drift.** { *; }

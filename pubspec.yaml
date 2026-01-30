@@ -1,0 +1,64 @@
+name: finance
+description: Cross-platform personal finance app with offline-first architecture
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+
+  # Database
+  drift: ^2.14.1
+  sqlite3_flutter_libs: ^0.5.18
+  path_provider: ^2.1.1
+  path: ^1.8.3
+
+  # Networking
+  dio: ^5.4.0
+  html: ^0.15.4
+
+  # Background & Notificationsx 
+  workmanager: ^0.9.0
+  flutter_background_service: ^5.0.5
+  flutter_local_notifications: ^20.0.0
+
+  # UI
+  fl_chart: ^0.69.0
+  intl: ^0.19.0
+
+  # File Operations
+  file_picker: ^8.0.0
+  share_plus: ^10.0.0
+  archive: ^3.4.9
+  csv: ^6.0.0
+
+  # Utilities
+  uuid: ^4.3.3
+  decimal: ^3.2.4
+  shared_preferences: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  drift_dev: ^2.14.1
+  build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  # If icon.png doesn't exist, Flutter will use default icon
+  # You can add your custom icon later and run: flutter pub run flutter_launcher_icons:main
