@@ -64,6 +64,8 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    // Play Core is required for deferred components / split install API used by Flutter embedding
+    implementation("com.google.android.play:core:1.10.3")
 }
 
 flutter {

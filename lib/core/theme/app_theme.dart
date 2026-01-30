@@ -30,13 +30,28 @@ class AppTheme {
   static const Color darkTextSecondary = Color(0xFF94A3B8); // Slate 400
   static const Color darkTextTertiary = Color(0xFF64748B); // Slate 500
 
-  // Spacing
+  // Base Spacing (static fallbacks)
   static const double spacingXs = 4.0;
   static const double spacingSm = 8.0;
   static const double spacingMd = 16.0;
   static const double spacingLg = 24.0;
   static const double spacingXl = 32.0;
   static const double spacing2xl = 48.0;
+
+  /// Dynamic spacing calculator based on screen size
+  /// Returns a responsive spacing value that scales with screen height
+  static double getResponsiveSpacing(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    // Base: 16px for 800px screen, scales proportionally
+    // Min: 14px, Max: 20px
+    final spacing = (screenHeight / 800) * 16;
+    return spacing.clamp(14.0, 20.0);
+  }
+
+  /// Get all spacing values based on screen size
+  static ResponsiveSpacing responsive(BuildContext context) {
+    return ResponsiveSpacing(context);
+  }
 
   // Border Radius
   static const double radiusSm = 8.0;
@@ -464,12 +479,43 @@ class AppTheme {
   }
 }
 
+/// Responsive spacing class that provides dynamic spacing values based on screen size
+class ResponsiveSpacing {
+  final BuildContext context;
+  late final double _baseSpacing;
+
+  ResponsiveSpacing(this.context) {
+    _baseSpacing = AppTheme.getResponsiveSpacing(context);
+  }
+
+  /// Extra small spacing (1/4 of base)
+  double get xs => _baseSpacing * 0.25;
+  
+  /// Small spacing (1/2 of base)
+  double get sm => _baseSpacing * 0.5;
+  
+  /// Medium spacing (base value - the main spacing unit)
+  double get md => _baseSpacing;
+  
+  /// Large spacing (1.5x base)
+  double get lg => _baseSpacing * 1.5;
+  
+  /// Extra large spacing (2x base)
+  double get xl => _baseSpacing * 2;
+  
+  /// 2x Extra large spacing (3x base)
+  double get xxl => _baseSpacing * 3;
+}
+
 /// Tema ile ilgili extension'lar
 extension ThemeExtensions on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
   TextTheme get textTheme => Theme.of(this).textTheme;
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+  
+  /// Get responsive spacing for this context
+  ResponsiveSpacing get spacing => ResponsiveSpacing(this);
 }
 
 /// Renk için extension'lar

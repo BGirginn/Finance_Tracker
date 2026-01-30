@@ -47,6 +47,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     final period = ref.watch(reportPeriodProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final spacing = context.spacing;
 
     return Scaffold(
       body: CustomScrollView(
@@ -104,20 +105,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               onRefresh: () async {
                 ref.invalidate(reportDataProvider);
               },
-              child: reportDataAsync.when(
+                child: reportDataAsync.when(
                 data: (data) => FadeTransition(
                   opacity: _fadeAnimation,
                   child: Padding(
-                    padding: const EdgeInsets.all(AppTheme.spacingMd),
+                    padding: EdgeInsets.all(context.spacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildPeriodSelector(context, ref, period),
-                        SizedBox(height: AppTheme.spacingMd),
+                        SizedBox(height: context.spacing.md),
                         _buildQuickStats(context, data),
-                        SizedBox(height: AppTheme.spacingMd),
+                        SizedBox(height: context.spacing.md),
                         _buildBalanceCard(context, data),
-                        SizedBox(height: AppTheme.spacingMd),
                       ],
                     ),
                   ),
@@ -142,11 +142,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             data: (data) => SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: AppTheme.spacingMd,
                   right: AppTheme.spacingMd,
-                  // Dynamic bottom: 2x the base spacing relative to screen
-                  bottom: MediaQuery.of(context).size.height * 0.02,
+                  bottom: AppTheme.spacingMd,
                 ),
                 child: _buildCategoryBreakdown(context, data),
               ),
@@ -171,9 +170,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     final isDark = theme.brightness == Brightness.dark;
 
     return ModernCard(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingMd,
-        vertical: AppTheme.spacingSm,
+                padding: EdgeInsets.symmetric(
+        horizontal: context.spacing.md,
+        vertical: context.spacing.sm,
       ),
       child: Row(
         children: [
@@ -211,7 +210,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       context: context,
       builder: (context) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
+          padding: EdgeInsets.all(context.spacing.md),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,12 +225,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: AppTheme.spacingMd),
+              SizedBox(height: context.spacing.md),
               const Text(
                 'Periyot Seçin',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: AppTheme.spacingMd),
+              SizedBox(height: context.spacing.md),
               _buildPeriodOption(context, ref, 'Bu Hafta', 'thisWeek'),
               _buildPeriodOption(context, ref, 'Bu Ay', 'thisMonth'),
               _buildPeriodOption(context, ref, 'Son 3 Ay', 'last3Months'),
@@ -299,7 +298,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             iconColor: AppTheme.successColor,
           ),
         ),
-        const SizedBox(width: AppTheme.spacingMd),
+        SizedBox(width: context.spacing.md),
         Expanded(
           child: StatCard(
             title: 'Gider',
@@ -357,7 +356,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               ),
             ],
           ),
-          const SizedBox(height: AppTheme.spacingMd),
+          SizedBox(height: context.spacing.md),
           Text(
             MoneyUtils.formatAmount(data.net),
             style: theme.textTheme.headlineLarge?.copyWith(
@@ -382,90 +381,83 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     final isDark = theme.brightness == Brightness.dark;
 
     if (data.categoryBreakdown.isEmpty) {
-      return Expanded(
-        child: ModernCard(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.pie_chart_outline,
-                  size: 64,
-                  color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
-                ),
-                const SizedBox(height: AppTheme.spacingMd),
-                Text(
-                  'Kategori verisi yok',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary,
-                  ),
-                ),
-                const SizedBox(height: AppTheme.spacingSm),
-                Text(
-                  'Bu dönemde kategori kırılımı bulunmuyor',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+      return ModernCard(
+        padding: EdgeInsets.all(context.spacing.md),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.pie_chart_outline,
+              size: 64,
+              color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
             ),
-          ),
+            SizedBox(height: context.spacing.md),
+            Text(
+              'Kategori verisi yok',
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            Text(
+              'Bu dönemde kategori kırılımı bulunmuyor',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       );
     }
 
     final sortedCategories = data.categoryBreakdown.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    
     final total = sortedCategories.fold<Decimal>(
       Decimal.zero,
       (sum, entry) => sum + entry.value,
     );
 
-    return Expanded(
-      child: ModernCard(
-        padding: const EdgeInsets.all(AppTheme.spacingMd),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Kategori Kırılımı',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary,
-                  ),
+    return ModernCard(
+      padding: EdgeInsets.all(context.spacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Kategori Kırılımı',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary,
                 ),
-                Text(
-                  '${sortedCategories.length} kategori',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingMd),
-            // Categories list expands to fill remaining space
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const BouncingScrollPhysics(),
-                itemCount: sortedCategories.length,
-                itemBuilder: (context, index) {
-                  final entry = sortedCategories[index];
-                  final percentage = total > Decimal.zero
-                      ? (entry.value.toDouble() / total.toDouble()) * 100.0
-                      : 0.0;
-                  return _buildCategoryItem(context, entry.key, entry.value, percentage);
-                },
               ),
+              Text(
+                '${sortedCategories.length} kategori',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: context.spacing.md),
+          // Categories list expands to fill remaining space
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              physics: const BouncingScrollPhysics(),
+              itemCount: sortedCategories.length,
+              itemBuilder: (context, index) {
+                final entry = sortedCategories[index];
+                final percentage = total > Decimal.zero
+                    ? (entry.value.toDouble() / total.toDouble()) * 100.0
+                    : 0.0;
+                return _buildCategoryItem(context, entry.key, entry.value, percentage);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -504,7 +496,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(AppTheme.spacingMd),
+                padding: EdgeInsets.all(context.spacing.md),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -527,7 +519,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               Expanded(
                 child: ListView.builder(
                   controller: scrollController,
-                  padding: const EdgeInsets.all(AppTheme.spacingMd),
+                  padding: EdgeInsets.all(context.spacing.md),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
                     final entry = categories[index];
@@ -558,7 +550,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     final colorIndex = name.hashCode % colors.length;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+      padding: EdgeInsets.only(bottom: context.spacing.md),
       child: Column(
         children: [
           Row(

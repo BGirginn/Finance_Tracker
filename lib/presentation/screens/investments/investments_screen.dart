@@ -18,7 +18,7 @@ class InvestmentsScreen extends ConsumerStatefulWidget {
 }
 
 class _InvestmentsScreenState extends ConsumerState<InvestmentsScreen>
-    with SingleTickerProviderStateMixin {
+  with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController _animationController;
 
