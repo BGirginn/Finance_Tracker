@@ -41,26 +41,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       _selectedDate = entry.date;
       // Category will be set after categories load
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _loadCategoryFromEntry(entry.category, entry.type);
+        _loadCategoryFromEntry(entry.category);
       });
     } else if (widget.initialType != null) {
       _type = widget.initialType!;
     }
   }
 
-  void _loadCategoryFromEntry(String? categoryName, String? type) {
+  void _loadCategoryFromEntry(String? categoryName) {
     if (categoryName == null) return;
-    if (type == 'income') {
-      final categories = ref.read(incomeCategoriesProvider);
-      final match = categories.where((c) => c.name == categoryName).firstOrNull;
-      if (match != null && mounted) {
-        setState(() {
-          _selectedCategory = match;
-        });
-      }
-      return;
-    }
-
     final categoriesAsync = ref.read(expenseCategoriesProvider);
     categoriesAsync.whenData((categories) {
       final match = categories.where((c) => c.name == categoryName).firstOrNull;
@@ -150,9 +139,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final expenseAsync = ref.watch(expenseCategoriesProvider);
-    final incomeList = ref.watch(incomeCategoriesProvider);
-    final categoriesAsync = _type == 'expense' ? expenseAsync : AsyncValue.data(incomeList);
+    final categoriesAsync = ref.watch(expenseCategoriesProvider);
     final theme = Theme.of(context);
     
     return Scaffold(
