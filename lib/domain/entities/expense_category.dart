@@ -86,18 +86,18 @@ class ExpenseCategory {
   };
 
   static const List<String> defaultColors = [
-    'FF5722', // Deep Orange
-    '2196F3', // Blue
-    '4CAF50', // Green
-    '9C27B0', // Purple
-    'F44336', // Red
-    '00BCD4', // Cyan
-    'FF9800', // Orange
-    '795548', // Brown
-    '607D8B', // Blue Grey
-    'E91E63', // Pink
-    '3F51B5', // Indigo
-    '009688', // Teal
+    'FF6B35', // Vivid Orange
+    '1976D2', // Vivid Blue
+    '00C853', // Vivid Green
+    '7C4DFF', // Vivid Purple
+    'FF1744', // Vivid Red
+    '00E5FF', // Bright Cyan
+    'FFC107', // Amber
+    'FF8A65', // Coral
+    '4DD0E1', // Aqua
+    'D81B60', // Magenta
+    '3949AB', // Strong Indigo
+    '00BFA5', // Turquoise
   ];
 }
 

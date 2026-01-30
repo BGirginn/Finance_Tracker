@@ -6,8 +6,9 @@ import '../../providers/expense_category_provider.dart';
 
 class AddEditCategoryScreen extends ConsumerStatefulWidget {
   final ExpenseCategory? category;
+  final Future<void> Function(ExpenseCategory)? onSave;
 
-  const AddEditCategoryScreen({super.key, this.category});
+  const AddEditCategoryScreen({super.key, this.category, this.onSave});
 
   @override
   ConsumerState<AddEditCategoryScreen> createState() => _AddEditCategoryScreenState();
@@ -124,7 +125,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
       itemBuilder: (context, index) {
         final entry = icons[index];
         final isSelected = entry.key == _selectedIcon;
-        final color = Color(int.parse(_selectedColor, radix: 16));
+        final color = Color(0xFF000000 | int.parse(_selectedColor, radix: 16));
         
         return GestureDetector(
           onTap: () => setState(() => _selectedIcon = entry.key),
@@ -156,7 +157,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
       itemCount: ExpenseCategory.defaultColors.length,
       itemBuilder: (context, index) {
         final colorHex = ExpenseCategory.defaultColors[index];
-        final color = Color(int.parse(colorHex, radix: 16));
+        final color = Color(0xFF000000 | int.parse(colorHex, radix: 16));
         final isSelected = colorHex == _selectedColor;
         
         return GestureDetector(
@@ -182,7 +183,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
   }
 
   Widget _buildPreview() {
-    final color = Color(int.parse(_selectedColor, radix: 16));
+    final color = Color(0xFF000000 | int.parse(_selectedColor, radix: 16));
     final icon = ExpenseCategory.iconDataFromName(_selectedIcon);
     
     return Card(
@@ -215,10 +216,14 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
         createdAt: widget.category?.createdAt,
       );
 
-      if (isEditing) {
-        await notifier.updateCategory(category);
+      if (widget.onSave != null) {
+        await widget.onSave!(category);
       } else {
-        await notifier.addCategory(category);
+        if (isEditing) {
+          await notifier.updateCategory(category);
+        } else {
+          await notifier.addCategory(category);
+        }
       }
 
       if (mounted) {

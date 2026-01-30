@@ -74,3 +74,27 @@ final expenseCategoryNotifierProvider =
     StateNotifierProvider<ExpenseCategoryNotifier, AsyncValue<List<ExpenseCategory>>>((ref) {
   return ExpenseCategoryNotifier(ref);
 });
+
+/// In-memory income categories notifier (editable in settings)
+class IncomeCategoryNotifier extends StateNotifier<List<ExpenseCategory>> {
+  IncomeCategoryNotifier() : super(getDefaultIncomeCategories());
+
+  Future<ExpenseCategory> addCategory(ExpenseCategory category) async {
+    final newId = DateTime.now().millisecondsSinceEpoch;
+    final newCat = category.copyWith(id: newId);
+    state = [...state, newCat];
+    return newCat;
+  }
+
+  Future<void> updateCategory(ExpenseCategory category) async {
+    state = state.map((c) => c.id == category.id ? category : c).toList();
+  }
+
+  Future<void> deleteCategory(int id) async {
+    state = state.where((c) => c.id != id).toList();
+  }
+}
+
+final incomeCategoryNotifierProvider = StateNotifierProvider<IncomeCategoryNotifier, List<ExpenseCategory>>((ref) {
+  return IncomeCategoryNotifier();
+});
