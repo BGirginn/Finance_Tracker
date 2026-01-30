@@ -77,7 +77,14 @@ final expenseCategoryNotifierProvider =
 
 /// In-memory income categories notifier (editable in settings)
 class IncomeCategoryNotifier extends StateNotifier<List<ExpenseCategory>> {
-  IncomeCategoryNotifier() : super(getDefaultIncomeCategories());
+  IncomeCategoryNotifier()
+      : super(
+          getDefaultIncomeCategories()
+              .asMap()
+              .entries
+              .map((e) => e.value.copyWith(id: DateTime.now().millisecondsSinceEpoch + e.key))
+              .toList(),
+        );
 
   Future<ExpenseCategory> addCategory(ExpenseCategory category) async {
     final newId = DateTime.now().millisecondsSinceEpoch;

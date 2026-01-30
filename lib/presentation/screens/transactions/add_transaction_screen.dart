@@ -8,6 +8,7 @@ import '../../../domain/entities/expense_category.dart';
 import '../../../data/repositories/ledger_repository.dart';
 import '../../providers/report_provider.dart';
 import '../../providers/expense_category_provider.dart';
+import '../categories/add_edit_category_screen.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key, this.entry, this.initialType});
@@ -371,7 +372,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                                 ? Border.all(color: category.color, width: 2)
                                 : null,
                           ),
-                          child: Column(
+                          child: Stack(
+                            children: [
+                              Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
@@ -394,6 +397,45 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                                 ),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                              ),
+                              // Edit overlay for both income and expense categories
+                              Positioned(
+                                top: 6,
+                                right: 6,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    // Open add/edit screen and save back to correct provider
+                                    await Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (ctx) => AddEditCategoryScreen(
+                                        category: category,
+                                        onSave: (edited) async {
+                                          if (_type == 'income') {
+                                            // update in-memory income notifier
+                                            await ref.read(incomeCategoryNotifierProvider.notifier).updateCategory(edited);
+                                          } else {
+                                            // update DB-backed expense categories
+                                            await ref.read(expenseCategoryNotifierProvider.notifier).updateCategory(edited);
+                                          }
+                                        },
+                                      ),
+                                    ));
+                                    // refresh local selection if name changed
+                                    setState(() {
+                                      if (_selectedCategory?.id == category.id) _selectedCategory = category;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 28,
+                                    height: 28,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.14),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: const Icon(Icons.edit, size: 16, color: Colors.white),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
