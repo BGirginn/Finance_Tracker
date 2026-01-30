@@ -188,11 +188,18 @@ List<ExpenseCategory> getDefaultIncomeCategories() {
       sortOrder: 2,
     ),
     ExpenseCategory(
+      name: 'Hediye',
+      iconName: 'card_giftcard',
+      colorHex: 'FF9800', // Orange
+      isDefault: true,
+      sortOrder: 3,
+    ),
+    ExpenseCategory(
       name: 'Faiz',
       iconName: 'account_balance',
       colorHex: '3F51B5', // Indigo
       isDefault: true,
-      sortOrder: 3,
+      sortOrder: 4,
     ),
   ];
 }
