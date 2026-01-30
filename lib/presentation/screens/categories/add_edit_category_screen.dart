@@ -124,7 +124,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
       itemBuilder: (context, index) {
         final entry = icons[index];
         final isSelected = entry.key == _selectedIcon;
-        final color = Color(int.parse(_selectedColor, radix: 16));
+        final color = Color(0xFF000000 | int.parse(_selectedColor, radix: 16));
         
         return GestureDetector(
           onTap: () => setState(() => _selectedIcon = entry.key),
@@ -156,7 +156,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
       itemCount: ExpenseCategory.defaultColors.length,
       itemBuilder: (context, index) {
         final colorHex = ExpenseCategory.defaultColors[index];
-        final color = Color(int.parse(colorHex, radix: 16));
+        final color = Color(0xFF000000 | int.parse(colorHex, radix: 16));
         final isSelected = colorHex == _selectedColor;
         
         return GestureDetector(
@@ -182,7 +182,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
   }
 
   Widget _buildPreview() {
-    final color = Color(int.parse(_selectedColor, radix: 16));
+    final color = Color(0xFF000000 | int.parse(_selectedColor, radix: 16));
     final icon = ExpenseCategory.iconDataFromName(_selectedIcon);
     
     return Card(

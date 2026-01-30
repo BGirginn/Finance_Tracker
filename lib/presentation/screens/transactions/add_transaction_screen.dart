@@ -8,6 +8,7 @@ import '../../../domain/entities/expense_category.dart';
 import '../../../data/repositories/ledger_repository.dart';
 import '../../providers/report_provider.dart';
 import '../../providers/expense_category_provider.dart';
+import '../categories/add_edit_category_screen.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key, this.entry, this.initialType});
@@ -366,37 +367,66 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? category.color.withValues(alpha: 0.2)
-                                : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                ? category.color.withValues(alpha: 0.22)
+                                : category.color.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
                             border: isSelected
                                 ? Border.all(color: category.color, width: 2)
                                 : null,
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Stack(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: category.color.withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  category.icon,
-                                  color: category.color,
-                                  size: 28,
-                                ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: category.color.withValues(alpha: 0.18),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      category.icon,
+                                      color: category.color,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    category.name,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: isSelected ? FontWeight.bold : null,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                category.name,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: isSelected ? FontWeight.bold : null,
+                              if (category.id != null)
+                                Positioned(
+                                  top: 6,
+                                  right: 6,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (ctx) => AddEditCategoryScreen(category: category),
+                                      ));
+                                    },
+                                    child: Container(
+                                      width: 28,
+                                      height: 28,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.16),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: const Icon(
+                                        Icons.edit_outlined,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
                             ],
                           ),
                         ),
