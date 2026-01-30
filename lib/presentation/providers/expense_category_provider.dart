@@ -9,6 +9,11 @@ final expenseCategoriesProvider = StreamProvider<List<ExpenseCategory>>((ref) {
   return repository.watchAllCategories();
 });
 
+/// Income categories provider (defaults)
+final incomeCategoriesProvider = Provider<List<ExpenseCategory>>((ref) {
+  return getDefaultIncomeCategories();
+});
+
 /// Expense categories list provider (non-streaming)
 final expenseCategoriesListProvider = FutureProvider<List<ExpenseCategory>>((ref) {
   final repository = ref.watch(expenseCategoryRepositoryProvider);

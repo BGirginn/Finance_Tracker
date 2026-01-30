@@ -41,15 +41,24 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       _selectedDate = entry.date;
       // Category will be set after categories load
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _loadCategoryFromEntry(entry.category);
+        _loadCategoryFromEntry(entry.category, entry.type);
       });
     } else if (widget.initialType != null) {
       _type = widget.initialType!;
     }
   }
 
-  void _loadCategoryFromEntry(String? categoryName) {
+  void _loadCategoryFromEntry(String? categoryName, [String? type]) {
     if (categoryName == null) return;
+    if (type == 'income') {
+      final list = ref.read(incomeCategoriesProvider);
+      final match = list.where((c) => c.name == categoryName).firstOrNull;
+      if (match != null && mounted) {
+        setState(() => _selectedCategory = match);
+      }
+      return;
+    }
+
     final categoriesAsync = ref.read(expenseCategoriesProvider);
     categoriesAsync.whenData((categories) {
       final match = categories.where((c) => c.name == categoryName).firstOrNull;
@@ -139,7 +148,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categoriesAsync = ref.watch(expenseCategoriesProvider);
+    final expenseAsync = ref.watch(expenseCategoriesProvider);
+    final incomeList = ref.watch(incomeCategoriesProvider);
+    final categoriesAsync = _type == 'expense' ? expenseAsync : AsyncValue.data(incomeList);
     final theme = Theme.of(context);
     
     return Scaffold(
@@ -353,8 +364,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? category.color.withValues(alpha: 0.2)
-                                : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                ? category.color.withValues(alpha: 0.22)
+                                : category.color.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
                             border: isSelected
                                 ? Border.all(color: category.color, width: 2)
@@ -366,7 +377,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: category.color.withValues(alpha: 0.2),
+                                  color: category.color.withValues(alpha: 0.18),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
